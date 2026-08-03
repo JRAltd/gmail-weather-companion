@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Privacy Policy – Gmail Weather Companion</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+    max-width: 760px;
+    margin: 0 auto;
+    padding: 40px 20px 80px;
+    line-height: 1.6;
+    color: #1a1a1a;
+    background: #ffffff;
+  }
+  h1 {
+    font-size: 1.8em;
+    border-bottom: 3px solid #c9a227;
+    padding-bottom: 12px;
+    margin-bottom: 8px;
+  }
+  .updated {
+    color: #666;
+    font-size: 0.9em;
+    margin-bottom: 32px;
+  }
+  h2 {
+    font-size: 1.25em;
+    margin-top: 36px;
+    color: #14213d;
+    border-left: 4px solid #c9a227;
+    padding-left: 12px;
+  }
+  ul { padding-left: 22px; }
+  li { margin-bottom: 8px; }
+  code {
+    background: #f4f4f4;
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-size: 0.9em;
+  }
+  .contact {
+    margin-top: 40px;
+    padding: 16px 20px;
+    background: #f9f7f0;
+    border-left: 4px solid #c9a227;
+  }
+  footer {
+    margin-top: 60px;
+    font-size: 0.85em;
+    color: #999;
+    text-align: center;
+  }
+</style>
+</head>
+<body>
+
+<h1>Privacy Policy — Gmail Weather Companion</h1>
+<p class="updated">Last updated: August 3, 2026</p>
+
+<p>Gmail Weather Companion (the "Extension") is a browser extension that scans the text of emails you have open in Gmail to detect travel or itinerary details (such as city names, dates, or trip references) and uses that information to display relevant weather forecasts. This policy explains what data the Extension accesses, how it is used, and what is not done with it.</p>
+
+<h2>What Data the Extension Accesses</h2>
+<ul>
+  <li><strong>Email content:</strong> The Extension reads the visible text of emails currently open in your Gmail tab in order to identify possible locations and dates (e.g., flight confirmations, hotel bookings, event details).</li>
+  <li><strong>Derived location data:</strong> Place names extracted from email text are used to request current weather and forecast data from a third-party weather API.</li>
+  <li><strong>No account credentials:</strong> The Extension does not access, store, or transmit your Gmail password, authentication tokens, or account credentials.</li>
+</ul>
+
+<h2>How Data Is Used</h2>
+<ul>
+  <li>Extracted location and date information is used solely to fetch and display a weather forecast relevant to the email you're viewing.</li>
+  <li>Weather lookups are sent to a third-party weather data provider using only the derived place name (e.g., "Chicago"), not the email content itself.</li>
+  <li>The Extension does not read, use, or store email content for any purpose other than identifying weather-relevant locations and dates.</li>
+</ul>
+
+<h2>Data Storage and Retention</h2>
+<ul>
+  <li>Email content is processed locally in your browser at the time the email is viewed and is not saved permanently by the Extension.</li>
+  <li>Any temporary cache of a detected location or forecast (used to avoid repeated API calls) is stored locally in your browser and is cleared when the cache expires or the Extension is removed.</li>
+  <li>The Extension does not maintain a remote database of user emails, locations, or personal information.</li>
+</ul>
+
+<h2>Data Sharing</h2>
+<ul>
+  <li>The Extension does not sell, rent, or share your email content or personal data with third parties.</li>
+  <li>The only external communication is a weather API request containing a place name and, where relevant, a date — no email content, sender/recipient information, or account identifiers are included in that request.</li>
+</ul>
+
+<h2>Your Choices</h2>
+<ul>
+  <li>You can disable or uninstall the Extension at any time through your browser's extension manager, which immediately stops all email scanning.</li>
+  <li>The Extension only operates on Gmail pages you have open — it does not run in the background or access email when Gmail is not open in an active tab.</li>
+</ul>
+
+<h2>Changes to This Policy</h2>
+<p>If this policy is updated, the "Last updated" date above will be revised. Continued use of the Extension after changes constitutes acceptance of the revised policy.</p>
+
+<div class="contact">
+  <strong>Contact:</strong> For questions about this privacy policy or the Extension's data practices, please open an issue on the project's GitHub repository.
+</div>
+
+<footer>
+  Gmail Weather Companion — Privacy Policy
+</footer>
+
+</body>
+</html>
