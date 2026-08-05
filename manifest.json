@@ -1,10 +1,9 @@
 {
   "manifest_version": 3,
   "name": "Gmail Weather Companion",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Smart weather forecast sidebar inside Gmail for travel itineraries, outdoor events, and email weather analysis powered by Gemini AI.",
   "permissions": [
-    "activeTab",
     "storage"
   ],
   "host_permissions": [
