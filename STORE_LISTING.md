@@ -8,20 +8,21 @@ Use the text below when submitting your extension in the [Chrome Developer Dashb
 `Gmail Weather Companion - Smart Weather Sidebar`
 
 ### 📝 Short Summary (Max 132 chars)
-`Smart weather forecasts & AI travel outfit recommendations automatically inside your Gmail inbox.`
+`Live weather, interactive Doppler radar, and smart packing tips right inside your Gmail inbox.`
 
 ### 📄 Detailed Description
 ```
-Gmail Weather Companion transforms how you plan trips and outdoor events right from your inbox!
+Gmail Weather Companion puts live weather, an interactive radar map, and smart packing tips right inside your inbox!
 
 FEATURES:
-• Automatic Location Detection: Intelligently identifies travel destinations, flight stopovers, and event locations mentioned in your emails.
-• Live Weather Intelligence: Get 7-day weather forecasts, hourly temperature curves, and precipitation radar data powered by Open-Meteo.
-• Gemini AI Outfit Recommendations: Receive tailored packing and outfit suggestions based on upcoming destination weather.
+• Destination Search: Look up any city or zip code — your last search is remembered automatically.
+• Live Weather: Current conditions plus a 7-day forecast, powered by Open-Meteo.
+• Interactive Doppler Radar: A live precipitation radar map you can pan and zoom.
+• Smart Packing Tips: Simple outfit/packing suggestions based on current conditions.
 • Docked Sidebar UI: Seamlessly sits inside mail.google.com without distracting from your workflow.
 
 PRIVACY FIRST:
-Your emails remain private. Text snippets are analyzed on-the-fly purely to detect city names and travel dates. No email contents or personal information are ever stored or shared.
+The extension does not use any account sign-in and does not send your email content anywhere. When an open email mentions a known city, that match happens entirely in your browser — nothing is transmitted. The only network requests are to Open-Meteo (weather/geocoding), RainViewer (radar tiles), and CartoDB (map base tiles).
 ```
 
 ---
@@ -29,7 +30,14 @@ Your emails remain private. Text snippets are analyzed on-the-fly purely to dete
 ### 🛡️ Single Purpose & Permission Justifications
 
 **Single Purpose Statement:**
-> "Provides real-time destination weather forecasts and packing advice inside Gmail when viewing travel emails."
+> "Displays live weather, an interactive radar map, and packing tips for a user-selected location inside Gmail."
 
-**Host Permission Justification (`https://mail.google.com/*`):**
-> "Required to inject the weather sidebar into the Gmail web interface and read active email text to detect destination city names for weather lookups."
+**Host Permission Justifications:**
+> `https://api.open-meteo.com/*`, `https://geocoding-api.open-meteo.com/*` — Required to fetch current/forecast weather data and to resolve searched city/zip names to coordinates.
+>
+> `https://api.rainviewer.com/*`, `https://tilecache.rainviewer.com/*` — Required to load live precipitation radar tiles for the Doppler radar map.
+>
+> `https://*.basemaps.cartocdn.com/*` — Required to load the base map tiles the radar overlay is drawn on.
+
+**Permission Justification (`storage`):**
+> "Used to save the user's selected location and temperature unit via `chrome.storage.sync`, so settings persist and stay in sync between the popup and the Gmail sidebar."
