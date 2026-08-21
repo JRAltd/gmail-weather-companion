@@ -31,7 +31,7 @@ Toggle on **"Developer mode"** using the switch in the top-right corner of the E
 - 📍 **Destination Search**: Look up any city or zip code, with the result saved for next time.
 - 🌤️ **Real-Time Open-Meteo Weather**: Current conditions and a 7-day forecast.
 - 📡 **Live Doppler Radar**: An interactive Leaflet map with real-time precipitation tiles from RainViewer.
-- 🧳 **Smart Packing Tips**: Simple, rule-based outfit/packing suggestions based on current conditions.
+- ✨ **AI Weather Summary**: A natural-language summary of current conditions (e.g. "Sunny and breezy, with mild temperatures today.") built from live temperature, sky conditions, and wind.
 - 📧 **Local Email Context**: When an open Gmail message mentions a known city, the sidebar highlights it — matching happens entirely in your browser, nothing is sent anywhere.
 - ⚙️ **Synced Settings**: Saved location and temperature unit sync across the popup and the Gmail sidebar via `chrome.storage.sync`.
 

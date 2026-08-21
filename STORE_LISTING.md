@@ -8,17 +8,17 @@ Use the text below when submitting your extension in the [Chrome Developer Dashb
 `Gmail Weather Companion - Smart Weather Sidebar`
 
 ### 📝 Short Summary (Max 132 chars)
-`Live weather, interactive Doppler radar, and smart packing tips right inside your Gmail inbox.`
+`Live weather, interactive Doppler radar, and an AI weather summary right inside your Gmail inbox.`
 
 ### 📄 Detailed Description
 ```
-Gmail Weather Companion puts live weather, an interactive radar map, and smart packing tips right inside your inbox!
+Gmail Weather Companion puts live weather, an interactive radar map, and an AI weather summary right inside your inbox!
 
 FEATURES:
 • Destination Search: Look up any city or zip code — your last search is remembered automatically.
 • Live Weather: Current conditions plus a 7-day forecast, powered by Open-Meteo.
 • Interactive Doppler Radar: A live precipitation radar map you can pan and zoom.
-• Smart Packing Tips: Simple outfit/packing suggestions based on current conditions.
+• AI Weather Summary: A natural-language summary of current conditions, like "Sunny and breezy, with mild temperatures today."
 • Docked Sidebar UI: Seamlessly sits inside mail.google.com without distracting from your workflow.
 
 PRIVACY FIRST:
@@ -30,7 +30,7 @@ The extension does not use any account sign-in and does not send your email cont
 ### 🛡️ Single Purpose & Permission Justifications
 
 **Single Purpose Statement:**
-> "Displays live weather, an interactive radar map, and packing tips for a user-selected location inside Gmail."
+> "Displays live weather, an interactive radar map, and an AI weather summary for a user-selected location inside Gmail."
 
 **Host Permission Justifications:**
 > `https://api.open-meteo.com/*`, `https://geocoding-api.open-meteo.com/*` — Required to fetch current/forecast weather data and to resolve searched city/zip names to coordinates.

@@ -284,7 +284,7 @@
   z-index: 1;
 }
 
-/* Smart Packing Recommendation Card */
+/* AI Weather Summary Card */
 .gwc-packing-card {
   background: var(--gwc-surface);
   border: 1px solid var(--gwc-border);
