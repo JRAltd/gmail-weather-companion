@@ -168,17 +168,62 @@
     return Math.round(tempC) + '°C';
   }
 
-  function getPackingAdvice(tempC, desc) {
-    let advice = "";
-    if (tempC < 10) advice = "Bring a warm winter coat, scarf, gloves, and insulated layers.";
-    else if (tempC < 18) advice = "Pack a lightweight jacket or cardigan with jeans and comfortable walking shoes.";
-    else if (tempC > 28) advice = "Pack breathable cotton clothing, sunglasses, sunscreen, and stay hydrated!";
-    else advice = "Pleasant weather expected. Pack casual layers, t-shirts, and light outerwear.";
+  // Maps a WMO description into a natural, descriptive sky phrase (e.g. "sunny", "breezy")
+  function getSkyPhrase(desc) {
+    const phrases = {
+      'Clear sky': 'sunny',
+      'Mainly clear': 'mostly sunny',
+      'Partly cloudy': 'partly cloudy',
+      'Overcast': 'cloudy',
+      'Foggy': 'foggy',
+      'Depositing rime fog': 'foggy',
+      'Light drizzle': 'lightly drizzling',
+      'Moderate drizzle': 'drizzly',
+      'Dense drizzle': 'drizzly',
+      'Slight rain': 'lightly rainy',
+      'Moderate rain': 'rainy',
+      'Heavy rain': 'heavily rainy',
+      'Slight snow fall': 'lightly snowing',
+      'Moderate snow fall': 'snowy',
+      'Heavy snow fall': 'heavily snowing',
+      'Slight rain showers': 'showery',
+      'Moderate rain showers': 'showery',
+      'Violent rain showers': 'stormy',
+      'Thunderstorm': 'stormy',
+      'Thunderstorm with slight hail': 'stormy with hail',
+      'Thunderstorm with heavy hail': 'stormy with heavy hail'
+    };
+    return phrases[desc] || desc.toLowerCase();
+  }
 
-    if (desc && (desc.toLowerCase().includes('rain') || desc.toLowerCase().includes('drizzle') || desc.toLowerCase().includes('thunderstorm'))) {
-      advice += " ☔ Don't forget an umbrella or rain jacket!";
+  function getWindPhrase(windSpeedKmh) {
+    if (windSpeedKmh < 8) return 'calm';
+    if (windSpeedKmh < 24) return 'breezy';
+    if (windSpeedKmh < 40) return 'windy';
+    return 'very windy';
+  }
+
+  function getTempPhrase(tempC) {
+    if (tempC < 0) return 'freezing';
+    if (tempC < 10) return 'cold';
+    if (tempC < 18) return 'cool';
+    if (tempC < 26) return 'mild';
+    if (tempC < 32) return 'warm';
+    return 'hot';
+  }
+
+  // Builds a natural-language weather summary from live conditions (e.g. "Sunny and breezy, with mild temperatures today.")
+  function getWeatherSummary(tempC, desc, windSpeedKmh, precip) {
+    const sky = getSkyPhrase(desc);
+    const windWord = getWindPhrase(windSpeedKmh);
+    const tempWord = getTempPhrase(tempC);
+    const skyCapitalized = sky.charAt(0).toUpperCase() + sky.slice(1);
+
+    let summary = `${skyCapitalized} and ${windWord}, with ${tempWord} temperatures today.`;
+    if (precip && precip > 0) {
+      summary += ' Precipitation is falling right now, so keep an umbrella handy.';
     }
-    return advice;
+    return summary;
   }
 
   // Initialize Native Leaflet Radar Map with maxNativeZoom: 6 (strictly avoids RainViewer z>=7 warning tiles)
@@ -271,7 +316,7 @@
         }
       }
 
-      const packingTip = getPackingAdvice(currTemp, currDesc);
+      const weatherSummary = getWeatherSummary(currTemp, currDesc, wind, precip);
 
       container.innerHTML = `
         <div class="gwc-weather-card">
@@ -307,10 +352,10 @@
         </div>
 
         <div class="gwc-packing-card">
-          <div class="gwc-packing-icon">🧳</div>
+          <div class="gwc-packing-icon">✨</div>
           <div class="gwc-packing-content">
-            <div class="gwc-packing-title">Smart Packing Tip</div>
-            <div class="gwc-packing-text">${packingTip}</div>
+            <div class="gwc-packing-title">AI Weather Summary</div>
+            <div class="gwc-packing-text">${weatherSummary}</div>
           </div>
         </div>
 

@@ -1,8 +1,8 @@
 {
   "manifest_version": 3,
   "name": "Gmail Weather Companion",
-  "version": "1.1.1",
-  "description": "Live weather forecasts, interactive Doppler radar, destination search, and smart packing recommendations directly inside Gmail.",
+  "version": "1.1.2",
+  "description": "Live weather forecasts, interactive Doppler radar, destination search, and an AI weather summary directly inside Gmail.",
   "icons": {
     "16": "icons/icon16.png",
     "48": "icons/icon48.png",
