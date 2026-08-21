@@ -57,41 +57,39 @@
 <body>
 
 <h1>Privacy Policy — Gmail Weather Companion</h1>
-<p class="updated">Last updated: August 3, 2026</p>
+<p class="updated">Last updated: August 21, 2026</p>
 
-<p>Gmail Weather Companion (the "Extension") is a browser extension that scans the text of emails you have open in Gmail to detect travel or itinerary details (such as city names, dates, or trip references) and uses that information to display relevant weather forecasts. This policy explains what data the Extension accesses, how it is used, and what is not done with it.</p>
+<p>Gmail Weather Companion (the "Extension") is a browser extension that displays live weather, an interactive radar map, and packing tips for a location you choose, in a sidebar docked inside Gmail. This policy explains what data the Extension accesses, how it is used, and what is not done with it.</p>
 
 <h2>What Data the Extension Accesses</h2>
 <ul>
-  <li><strong>Email content:</strong> The Extension reads the visible text of emails currently open in your Gmail tab in order to identify possible locations and dates (e.g., flight confirmations, hotel bookings, event details).</li>
-  <li><strong>Derived location data:</strong> Place names extracted from email text are used to request current weather and forecast data from a third-party weather API.</li>
-  <li><strong>No account credentials:</strong> The Extension does not access, store, or transmit your Gmail password, authentication tokens, or account credentials.</li>
+  <li><strong>Searched or saved location:</strong> The city/zip you search, or the default location, is used to request weather and radar data.</li>
+  <li><strong>Email subject/body text (local matching only):</strong> When you open an email in Gmail, the Extension reads the visible subject and body text locally in your browser to check whether it mentions one of a small built-in list of city names. This comparison happens entirely on your device — the email text itself is never sent anywhere.</li>
+  <li><strong>No account credentials:</strong> The Extension does not access, store, or transmit your Gmail password, authentication tokens, or account credentials. There is no sign-in of any kind.</li>
 </ul>
 
 <h2>How Data Is Used</h2>
 <ul>
-  <li>Extracted location and date information is used solely to fetch and display a weather forecast relevant to the email you're viewing.</li>
-  <li>Weather lookups are sent to a third-party weather data provider using only the derived place name (e.g., "Chicago"), not the email content itself.</li>
-  <li>The Extension does not read, use, or store email content for any purpose other than identifying weather-relevant locations and dates.</li>
+  <li>Your selected location (city/zip name or coordinates) is sent to Open-Meteo to fetch current and forecast weather, and to RainViewer/CartoDB to render the radar map tiles.</li>
+  <li>Email text is only used locally to detect a mention of a known city name and is never transmitted to any server, including Open-Meteo, RainViewer, or CartoDB.</li>
 </ul>
 
 <h2>Data Storage and Retention</h2>
 <ul>
-  <li>Email content is processed locally in your browser at the time the email is viewed and is not saved permanently by the Extension.</li>
-  <li>Any temporary cache of a detected location or forecast (used to avoid repeated API calls) is stored locally in your browser and is cleared when the cache expires or the Extension is removed.</li>
+  <li>Your saved location and temperature unit preference are stored in your browser via <code>chrome.storage.sync</code> and are cleared if you remove the Extension.</li>
   <li>The Extension does not maintain a remote database of user emails, locations, or personal information.</li>
 </ul>
 
 <h2>Data Sharing</h2>
 <ul>
-  <li>The Extension does not sell, rent, or share your email content or personal data with third parties.</li>
-  <li>The only external communication is a weather API request containing a place name and, where relevant, a date — no email content, sender/recipient information, or account identifiers are included in that request.</li>
+  <li>The Extension does not sell, rent, or share your data with third parties.</li>
+  <li>The only external communication is to Open-Meteo (weather/geocoding), RainViewer (radar tiles), and CartoDB (map tiles) — no email content, sender/recipient information, or account identifiers are included in those requests.</li>
 </ul>
 
 <h2>Your Choices</h2>
 <ul>
-  <li>You can disable or uninstall the Extension at any time through your browser's extension manager, which immediately stops all email scanning.</li>
-  <li>The Extension only operates on Gmail pages you have open — it does not run in the background or access email when Gmail is not open in an active tab.</li>
+  <li>You can disable or uninstall the Extension at any time through your browser's extension manager.</li>
+  <li>The Extension only operates on Gmail pages you have open — it does not run in the background when Gmail is not open in an active tab.</li>
 </ul>
 
 <h2>Changes to This Policy</h2>

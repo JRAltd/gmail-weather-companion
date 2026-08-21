@@ -1,13 +1,13 @@
 # 🌤️ Gmail Weather Companion - Chrome Extension Setup
 
-Install the Weather Companion directly into Google Chrome to view live weather forecasts and travel advice inside your actual **Gmail** inbox!
+Install the Weather Companion directly into Google Chrome to view live weather forecasts, an interactive Doppler radar map, and smart packing tips inside your actual **Gmail** inbox!
 
 ---
 
 ## 🚀 Step-by-Step Installation
 
-### Step 1: Download or Save Extension Files
-Click the **"Download Extension (.zip)"** button in the app to download all manifest and script files. Alternatively, copy the source code into a local folder named `gmail-weather-extension`.
+### Step 1: Get the Extension Files
+Clone or download this repository — the extension files live at the repo root (`manifest.json`, `content.js`, `popup.html`, `popup.js`, `styles.css`, `leaflet.js`, `leaflet.css`, `icons/`).
 
 ### Step 2: Open Chrome Extensions
 1. Open Google Chrome.
@@ -18,17 +18,21 @@ Toggle on **"Developer mode"** using the switch in the top-right corner of the E
 
 ### Step 4: Load Unpacked Extension
 1. Click the **"Load unpacked"** button in the top-left corner.
-2. Select the `gmail-weather-extension` folder containing `manifest.json`.
+2. Select this repository's folder (the one containing `manifest.json`).
 
 ### Step 5: Test on Gmail!
 1. Open [mail.google.com](https://mail.google.com) in Chrome.
-2. Open any email containing travel confirmation, flight itinerary, or event locations (e.g. Seattle, Austin, Banff, Tokyo).
-3. The **Weather Companion Sidebar** will automatically pop up in Gmail!
+2. Click the weather toggle button that appears on the page, or the extension icon in the toolbar.
+3. Search any city or zip code, or open an email mentioning a supported city to auto-detect a trip location.
 
 ---
 
 ## ⚡ Features
-- 📍 **Auto Location Extraction**: Reads destination locations from emails using Gemini AI.
-- 🌤️ **Real-Time Open-Meteo Weather**: 7-day forecasts, hourly temperatures, and rain probabilities.
-- 👔 **Outfit & Travel Tips**: AI recommendations based on upcoming weather.
-- ⚙️ **Configurable Endpoint**: Set custom API host URL in extension popup.
+- 📍 **Destination Search**: Look up any city or zip code, with the result saved for next time.
+- 🌤️ **Real-Time Open-Meteo Weather**: Current conditions and a 7-day forecast.
+- 📡 **Live Doppler Radar**: An interactive Leaflet map with real-time precipitation tiles from RainViewer.
+- 🧳 **Smart Packing Tips**: Simple, rule-based outfit/packing suggestions based on current conditions.
+- 📧 **Local Email Context**: When an open Gmail message mentions a known city, the sidebar highlights it — matching happens entirely in your browser, nothing is sent anywhere.
+- ⚙️ **Synced Settings**: Saved location and temperature unit sync across the popup and the Gmail sidebar via `chrome.storage.sync`.
+
+No account sign-in, no custom backend server, no AI API key required — weather, geocoding, and radar data come directly from free public APIs (Open-Meteo, RainViewer, and CartoDB basemap tiles).
