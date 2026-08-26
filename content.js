@@ -65,6 +65,8 @@
         <button class="gwc-search-btn" id="gwc-search-btn">Search</button>
       </div>
 
+      <div id="gwc-geo-results"></div>
+
       <div id="gwc-context-container"></div>
 
       <div id="gwc-weather-container">
@@ -128,24 +130,69 @@
     const q = searchInput.value.trim();
     if (!q) return;
     searchBtn.innerText = 'Searching...';
+    clearGeoResults();
     try {
-      const geoUrl = `https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(q)}&count=1&language=en&format=json`;
+      const geoUrl = `https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(q)}&count=5&language=en&format=json`;
       const res = await fetch(geoUrl);
+      if (!res.ok) throw new Error(`Geocoding returned HTTP ${res.status}`);
+
       const json = await res.json();
-      if (json.results && json.results.length > 0) {
-        const item = json.results[0];
-        const full = item.name + (item.admin1 ? `, ${item.admin1}` : '') + `, ${item.country || ''}`;
-        currentCity = { name: item.name, lat: item.latitude, lng: item.longitude, full: full };
-        chrome.storage.sync.set({ gwc_saved_city: currentCity });
-        renderWeather();
+      const results = json.results || [];
+      if (results.length === 0) {
+        showGeoMessage('No match for that search. Try a nearby city name (e.g. Urbandale, Des Moines).');
+      } else if (results.length === 1) {
+        selectCity(results[0]);
       } else {
-        alert('City/Zip not found. Please try another search term (e.g. Waukee, Des Moines, 50263).');
+        showGeoChoices(results);
       }
     } catch (e) {
       console.error('Geocoding error:', e);
+      showGeoMessage('Location search failed. Please check your connection and try again.');
     } finally {
       searchBtn.innerText = 'Search';
     }
+  }
+
+  function formatPlace(item) {
+    return [item.name, item.admin1, item.country].filter(Boolean).join(', ');
+  }
+
+  function selectCity(item) {
+    currentCity = {
+      name: item.name,
+      lat: item.latitude,
+      lng: item.longitude,
+      full: formatPlace(item)
+    };
+    chrome.storage.sync.set({ gwc_saved_city: currentCity });
+    clearGeoResults();
+    renderWeather();
+  }
+
+  function clearGeoResults() {
+    const box = document.getElementById('gwc-geo-results');
+    if (box) box.innerHTML = '';
+  }
+
+  function showGeoMessage(msg) {
+    const box = document.getElementById('gwc-geo-results');
+    if (box) box.innerHTML = `<div class="gwc-geo-msg">${escapeHtml(msg)}</div>`;
+  }
+
+  // Most city names and ZIP codes match more than one place, so let the user
+  // pick instead of silently forecasting for whichever hit came back first.
+  function showGeoChoices(results) {
+    const box = document.getElementById('gwc-geo-results');
+    if (!box) return;
+    box.innerHTML = `<div class="gwc-geo-msg">Did you mean:</div>` + results.map((item, i) => `
+      <button class="gwc-geo-option" data-idx="${i}">
+        <span>${escapeHtml(formatPlace(item))}</span>
+        <span class="gwc-geo-coords">${item.latitude.toFixed(2)}, ${item.longitude.toFixed(2)}</span>
+      </button>
+    `).join('');
+    box.querySelectorAll('.gwc-geo-option').forEach((btn) => {
+      btn.addEventListener('click', () => selectCity(results[Number(btn.dataset.idx)]));
+    });
   }
 
   // WMO Code Interpreter
@@ -161,11 +208,40 @@
     return wmo[code] !== undefined ? wmo[code] : 'Partly cloudy';
   }
 
-  function formatTemp(tempC) {
-    if (currentUnit === 'F') {
-      return Math.round((tempC * 9 / 5) + 32) + '°F';
-    }
-    return Math.round(tempC) + '°C';
+  // Open-Meteo is asked for values in the user's selected unit system, so nothing
+  // is converted on display. The phrase helpers below still reason in metric and
+  // normalize back explicitly.
+  function apiUnits() {
+    return currentUnit === 'F'
+      ? { temperature: 'fahrenheit', wind: 'mph', precipitation: 'inch' }
+      : { temperature: 'celsius', wind: 'kmh', precipitation: 'mm' };
+  }
+
+  function windLabel() {
+    return currentUnit === 'F' ? 'mph' : 'km/h';
+  }
+
+  function precipLabel() {
+    return currentUnit === 'F' ? 'in' : 'mm';
+  }
+
+  function toCelsius(temp) {
+    return currentUnit === 'F' ? (temp - 32) * 5 / 9 : temp;
+  }
+
+  function toKmh(windSpeed) {
+    return currentUnit === 'F' ? windSpeed * 1.609344 : windSpeed;
+  }
+
+  function escapeHtml(str) {
+    return String(str).replace(/[&<>"']/g, (c) => ({
+      '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
+    }[c]));
+  }
+
+  function formatTemp(temp) {
+    if (temp === null || temp === undefined || Number.isNaN(Number(temp))) return '--°';
+    return Math.round(Number(temp)) + (currentUnit === 'F' ? '°F' : '°C');
   }
 
   // Maps a WMO description into a natural, descriptive sky phrase (e.g. "sunny", "breezy")
@@ -213,10 +289,10 @@
   }
 
   // Builds a natural-language weather summary from live conditions (e.g. "Sunny and breezy, with mild temperatures today.")
-  function getWeatherSummary(tempC, desc, windSpeedKmh, precip) {
+  function getWeatherSummary(temp, desc, windSpeed, precip) {
     const sky = getSkyPhrase(desc);
-    const windWord = getWindPhrase(windSpeedKmh);
-    const tempWord = getTempPhrase(tempC);
+    const windWord = getWindPhrase(toKmh(windSpeed));
+    const tempWord = getTempPhrase(toCelsius(temp));
     const skyCapitalized = sky.charAt(0).toUpperCase() + sky.slice(1);
 
     let summary = `${skyCapitalized} and ${windWord}, with ${tempWord} temperatures today.`;
@@ -280,19 +356,35 @@
   // Render Weather Card
   async function renderWeather() {
     const container = document.getElementById('gwc-weather-container');
-    container.innerHTML = `<div style="text-align: center; padding: 30px; color: var(--gwc-text-muted);">Fetching forecast for ${currentCity.name}...</div>`;
+    container.innerHTML = `<div style="text-align: center; padding: 30px; color: var(--gwc-text-muted);">Fetching forecast for ${escapeHtml(currentCity.name)}...</div>`;
 
     try {
-      const url = `https://api.open-meteo.com/v1/forecast?latitude=${currentCity.lat}&longitude=${currentCity.lng}&current=temperature_2m,relative_humidity_2m,weather_code,wind_speed_10m,precipitation&daily=weather_code,temperature_2m_max,temperature_2m_min,precipitation_probability_max&timezone=auto`;
+      const units = apiUnits();
+      const url = `https://api.open-meteo.com/v1/forecast?latitude=${encodeURIComponent(currentCity.lat)}&longitude=${encodeURIComponent(currentCity.lng)}`
+        + `&current=temperature_2m,relative_humidity_2m,weather_code,wind_speed_10m,precipitation`
+        + `&daily=weather_code,temperature_2m_max,temperature_2m_min,precipitation_probability_max`
+        + `&temperature_unit=${units.temperature}&wind_speed_unit=${units.wind}`
+        + `&precipitation_unit=${units.precipitation}&timezone=auto`;
       const res = await fetch(url);
-      const data = await res.json();
+      if (!res.ok) throw new Error(`Open-Meteo returned HTTP ${res.status}`);
 
-      const currTemp = data.current ? data.current.temperature_2m : 20;
-      const currCode = data.current ? data.current.weather_code : 2;
+      const data = await res.json();
+      // Never substitute placeholder readings for missing data: a made-up
+      // temperature is indistinguishable from a real one on screen.
+      if (data.error) throw new Error(data.reason || 'Open-Meteo reported an error');
+      if (!data.current || typeof data.current.temperature_2m !== 'number') {
+        throw new Error('Response is missing current conditions');
+      }
+      if (!data.daily || !Array.isArray(data.daily.time)) {
+        throw new Error('Response is missing the daily forecast');
+      }
+
+      const currTemp = data.current.temperature_2m;
+      const currCode = data.current.weather_code;
       const currDesc = getWmoDescription(currCode);
-      const humidity = data.current ? data.current.relative_humidity_2m : 50;
-      const wind = data.current ? Math.round(data.current.wind_speed_10m) : 10;
-      const precip = data.current ? data.current.precipitation : 0;
+      const humidity = data.current.relative_humidity_2m;
+      const wind = Math.round(data.current.wind_speed_10m);
+      const precip = data.current.precipitation;
 
       const dayNames = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
       let forecastHtml = "";
@@ -304,7 +396,9 @@
           const maxT = formatTemp(data.daily.temperature_2m_max[i]);
           const minT = formatTemp(data.daily.temperature_2m_min[i]);
           const desc = getWmoDescription(data.daily.weather_code ? data.daily.weather_code[i] : 2);
-          const rain = data.daily.precipitation_probability_max[i] || 0;
+          const rain = data.daily.precipitation_probability_max
+            ? (data.daily.precipitation_probability_max[i] || 0)
+            : 0;
 
           forecastHtml += `
             <div class="gwc-forecast-item">
@@ -320,7 +414,7 @@
 
       container.innerHTML = `
         <div class="gwc-weather-card">
-          <div class="gwc-location-name">📍 ${currentCity.full || currentCity.name}</div>
+          <div class="gwc-location-name">📍 ${escapeHtml(currentCity.full || currentCity.name)}</div>
           <div class="gwc-hero-temp-row">
             <div>
               <div class="gwc-main-temp">${formatTemp(currTemp)}</div>
@@ -334,11 +428,11 @@
             </div>
             <div class="gwc-detail-item">
               <span class="gwc-detail-label">Wind</span>
-              <span class="gwc-detail-value">${wind} km/h</span>
+              <span class="gwc-detail-value">${wind} ${windLabel()}</span>
             </div>
             <div class="gwc-detail-item">
               <span class="gwc-detail-label">Precip</span>
-              <span class="gwc-detail-value">${precip} mm</span>
+              <span class="gwc-detail-value">${precip} ${precipLabel()}</span>
             </div>
           </div>
         </div>
@@ -346,7 +440,7 @@
         <div class="gwc-radar-card">
           <div class="gwc-radar-header">
             <span>📡 Live Doppler Radar</span>
-            <span style="font-size: 11px; font-weight: 500; color: var(--gwc-text-muted);">${currentCity.name} Area</span>
+            <span style="font-size: 11px; font-weight: 500; color: var(--gwc-text-muted);">${escapeHtml(currentCity.name)} Area</span>
           </div>
           <div id="gwc-radar-map" class="gwc-radar-map-div"></div>
         </div>
@@ -368,7 +462,12 @@
       initRadarMap(currentCity.lat, currentCity.lng);
     } catch (err) {
       console.error("Weather fetch failed:", err);
-      container.innerHTML = `<div style="color: #ef4444; padding: 20px; text-align: center;">Failed to load weather data. Please check connection.</div>`;
+      container.innerHTML = `
+        <div style="color: #ef4444; padding: 20px; text-align: center;">
+          <div style="font-weight: 600; margin-bottom: 6px;">Couldn't load weather data.</div>
+          <div style="font-size: 12px;">${escapeHtml(err && err.message ? err.message : 'Please check your connection.')}</div>
+        </div>
+      `;
     }
   }
 
