@@ -318,15 +318,19 @@
         minZoom: 2,
         maxZoom: 16,
         zoomControl: true,
-        attributionControl: false
+        attributionControl: true
       });
       window.gwcLeafletMap = map;
 
       // Base CartoDB OpenStreetMap tiles
-      L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', {
+      // CARTO's anonymous basemap tiles now require an API key (basemaps.cartocdn.com
+      // started watermarking "MAP KEY REQUIRED"); OSM's standard tile server is still
+      // free and keyless, at the cost of requiring attribution per its usage policy.
+      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
         minZoom: 2,
-        maxZoom: 16,
-        subdomains: 'abcd'
+        maxZoom: 19,
+        subdomains: 'abc',
+        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
       }).addTo(map);
 
       // RainViewer Live Radar overlay (maxNativeZoom: 6 clamps RainViewer requests to level 6 and scales tiles smoothly)
