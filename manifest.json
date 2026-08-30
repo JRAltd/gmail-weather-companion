@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "Gmail Weather Companion",
-  "version": "1.1.3",
+  "version": "1.1.4",
   "description": "Live weather forecasts, interactive Doppler radar, destination search, and an AI weather summary directly inside Gmail.",
   "icons": {
     "16": "icons/icon16.png",
@@ -28,6 +28,6 @@
     "https://geocoding-api.open-meteo.com/*",
     "https://api.rainviewer.com/*",
     "https://tilecache.rainviewer.com/*",
-    "https://*.basemaps.cartocdn.com/*"
+    "https://*.tile.openstreetmap.org/*"
   ]
 }
