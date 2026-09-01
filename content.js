@@ -27,8 +27,6 @@
   let currentUnit = stored.gwc_unit || 'F';
   let currentCity = stored.gwc_saved_city || CITY_DB[0];
 
-  let activeEmailSubject = "";
-
   // 1. Create Floating Toggle Button
   const toggleBtn = document.createElement('button');
   toggleBtn.id = 'gwc-toggle-btn';
@@ -67,8 +65,6 @@
 
       <div id="gwc-geo-results"></div>
 
-      <div id="gwc-context-container"></div>
-
       <div id="gwc-weather-container">
         <div style="text-align: center; padding: 30px; color: var(--gwc-text-muted);">Loading weather data...</div>
       </div>
@@ -88,7 +84,6 @@
   toggleBtn.addEventListener('click', () => {
     panel.classList.toggle('open');
     if (panel.classList.contains('open')) {
-      checkGmailContext();
       renderWeather();
     }
   });
@@ -475,62 +470,4 @@
     }
   }
 
-  // Scan Gmail interface to detect opened email subject/content
-  function checkGmailContext() {
-    const contextContainer = document.getElementById('gwc-context-container');
-    const emailHeader = document.querySelector('h2.hP'); // Standard Gmail email subject selector
-    const emailBody = document.querySelector('div.a3s');   // Standard Gmail email body selector
-
-    if (emailHeader) {
-      const subjectText = emailHeader.innerText;
-      const bodyText = emailBody ? emailBody.innerText : "";
-      const fullText = subjectText + " " + bodyText;
-
-      activeEmailSubject = subjectText;
-
-      // Check if email mentions a specific trip location
-      let detectedCity = null;
-      for (let i = 0; i < CITY_DB.length; i++) {
-        const reg = new RegExp("\\b" + CITY_DB[i].name + "\\b", "i");
-        if (reg.test(fullText)) {
-          detectedCity = CITY_DB[i];
-          break;
-        }
-      }
-
-      if (detectedCity) {
-        currentCity = detectedCity;
-        contextContainer.innerHTML = `
-          <div class="gwc-context-badge">
-            <b>📧 Trip Detected in Email:</b> ${escapeHtml(subjectText)} (${detectedCity.full})
-          </div>
-        `;
-      } else {
-        contextContainer.innerHTML = `
-          <div class="gwc-context-badge">
-            <b>📧 Open Email:</b> ${escapeHtml(subjectText)}
-          </div>
-        `;
-      }
-    } else {
-      contextContainer.innerHTML = "";
-    }
-  }
-
-  function escapeHtml(text) {
-    return text.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
-  }
-
-  // Observe Gmail DOM navigation for open email changes
-  const observer = new MutationObserver(() => {
-    const emailHeader = document.querySelector('h2.hP');
-    if (emailHeader && emailHeader.innerText !== activeEmailSubject) {
-      checkGmailContext();
-      if (panel.classList.contains('open')) {
-        renderWeather();
-      }
-    }
-  });
-
-  observer.observe(document.body, { childList: true, subtree: true });
 })();

@@ -22,7 +22,7 @@ FEATURES:
 • Docked Sidebar UI: Seamlessly sits inside mail.google.com without distracting from your workflow.
 
 PRIVACY FIRST:
-The extension does not use any account sign-in and does not send your email content anywhere. When an open email mentions a known city, that match happens entirely in your browser — nothing is transmitted. The only network requests are to Open-Meteo (weather/geocoding), RainViewer (radar tiles), and CartoDB (map base tiles).
+The extension does not read, scan, or store the subject or body of any email, and there is no account sign-in. It only uses the location you search or save. The only network requests are to Open-Meteo (weather/geocoding), RainViewer (radar tiles), and CartoDB (map base tiles), and they contain nothing but that location.
 ```
 
 ---

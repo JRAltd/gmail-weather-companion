@@ -211,25 +211,6 @@
   color: var(--gwc-text-muted);
 }
 
-/* Context Badge */
-.gwc-context-badge {
-  background: #eff6ff;
-  border: 1px solid #bfdbfe;
-  color: #1e40af;
-  padding: 10px 14px;
-  border-radius: 8px;
-  font-size: 13px;
-  line-height: 1.4;
-}
-
-@media (prefers-color-scheme: dark) {
-  .gwc-context-badge {
-    background: #1e3a8a33;
-    border-color: #1e40af;
-    color: #93c5fd;
-  }
-}
-
 /* Weather Hero Card */
 .gwc-weather-card {
   background: linear-gradient(135deg, #2563eb, #1d4ed8);
