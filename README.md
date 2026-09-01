@@ -1,6 +1,6 @@
 # 🌤️ Gmail Weather Companion - Chrome Extension Setup
 
-Install the Weather Companion directly into Google Chrome to view live weather forecasts, an interactive Doppler radar map, and smart packing tips inside your actual **Gmail** inbox!
+Install the Weather Companion directly into Google Chrome to view live weather forecasts, an interactive Doppler radar map, and a plain-language weather summary inside your actual **Gmail** inbox!
 
 ---
 
